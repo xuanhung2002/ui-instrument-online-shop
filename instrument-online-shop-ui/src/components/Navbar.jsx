@@ -34,7 +34,7 @@ export default function Navbar() {
               <li class="nav-item logo">
                 <a class="nav-link" href="/">
                   <img
-                    src="./assets/logo.jpg"
+                    src="./assets/logo1.jpg"
                     alt="logo"
                     style={{ maxHeight: "150px" }}
                   />
