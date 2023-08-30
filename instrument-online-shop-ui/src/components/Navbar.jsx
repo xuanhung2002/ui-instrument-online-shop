@@ -34,9 +34,9 @@ export default function Navbar() {
               <li class="nav-item logo">
                 <a class="nav-link" href="/">
                   <img
-                    src="./assets/logo1.jpg"
+                    src="./assets/logo.png"
                     alt="logo"
-                    style={{ maxHeight: "150px" }}
+                    style={{ maxHeight: "160px" }}
                   />
                 </a>
               </li>
@@ -57,10 +57,9 @@ export default function Navbar() {
                 </a>
               </li>
             </ul>
-            <div class="cart-item">
+            <div class="cart-item" style={{}}>
               <a href="" className="btn btn-outline-dark">
-                <i className="fa fa-shopping-cart" aria-hidden="true"></i>{" "}
-                Cart(0)
+                <i className="fa fa-shopping-cart" aria-hidden="true"></i> (0)
               </a>
             </div>
           </div>

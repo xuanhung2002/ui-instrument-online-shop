@@ -14,7 +14,7 @@ export default function Home() {
   };
 
   return (
-    <div className="home">
+    <div className="home shadow-lg">
       <div id="carouselExampleIndicators" className="carousel slide">
         <div className="carousel-indicators">
           <button

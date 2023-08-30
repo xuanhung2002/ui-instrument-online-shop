@@ -6,22 +6,22 @@ export default function Hearder() {
       <nav class="navbar bg-black py-1 shadow-sm text-light">
         <div class="container">
           <div class="d-flex justify-content-start">
-            <ul class="navbar-nav mb-2 mb-lg-0 d-flex flex-row">
+            <ul class="navbar-nav nav d-flex flex-row">
               <li class="header-info ms-3 d-none d-md-block">
                 <i className="header-info-item fa fa-map-marker text-warning me-1"></i>
                 K256/49/9 Âu Cơ, Hoà Khánh Bắc, Liên Chiểu, Đà Nẵng
               </li>
-              <li class="header-info ms-3 d-none d-md-block">
+              <li class="header-info ms-3 d-none d-lg-block">
                 <i className="header-info-item fa fa-phone text-warning me-1"></i>
                 0384651408
               </li>
-              <li class="header-info ms-3 d-none d-md-block flex-nowrap">
+              <li class="header-info ms-3 d-none d-lg-block">
                 <i className="header-info-item fa fa-clock-o text-warning me-1"></i>
                 7:20 - 20:30
               </li>
             </ul>
           </div>
-          <div className="buttons d-flex justify-content-end me-5">
+          <div className="buttons me-5">
             <ul className="nav align-items-center">
               <li className="button nav-item">
                 <a href="" className="btn btn-outline-dark text-light ms-2">
