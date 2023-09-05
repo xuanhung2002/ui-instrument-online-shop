@@ -15,5 +15,21 @@
 .header-info .header-info-item{
   color: yellow;
 }
+.corner-notification {
+  position: fixed;
+  top: 10px; /* Điều chỉnh khoảng cách từ trên xuống */
+  right: 10px; /* Điều chỉnh khoảng cách từ phải sang */
+  background-color: green;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 999; /* Để đảm bảo thông báo luôn hiển thị trên cùng */
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+.corner-notification.show {
+  opacity: 1;
+}
+
 
 

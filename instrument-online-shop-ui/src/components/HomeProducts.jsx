@@ -1,33 +1,74 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import CardItem from "./CardItem";
 
 export default function HomeProducts() {
+  const API_GET_CATEGORY = "http://localhost:8080/api/category";
+  const API_GET_ITEM = "http://localhost:8080/api/item";
+  const [category, setCategory] = useState([]);
+  const [item, setItem] = useState([]);
+
+  useEffect(() => {
+    fetchCategory();
+  }, []);
+
+  const fetchCategory = async () => {
+    try {
+      const response = await fetch(API_GET_CATEGORY);
+      const jsonData = await response.json();
+      setCategory(jsonData);
+    } catch (error) {
+      console.log("Error when fetch data: ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchItem();
+  }, []);
+  const fetchItem = async () => {
+    try {
+      const response = await fetch(API_GET_ITEM);
+      const jsonData = await response.json();
+      setItem(jsonData);
+    } catch (error) {
+      console.log("Error when fetch data: ", error);
+    }
+  };
+
   return (
     <div>
-      <div class="container text-center mt-4">
-        <div class="row">
-          <div class="col-md-2 col-sm-3 hidden-xs">
+      <div className="container text-center mt-4">
+        <div className="row">
+          <div className="col-md-2 col-sm-3 hidden-xs">
             <div className="slidebar-item">
               <div className="slidebar-title">
-                <h2 class="title-head margin-top-0">
-                  <span>Instrument</span>
+                <h2 className="title-head margin-top-0">
+                  <span>Category</span>
                 </h2>
               </div>
 
               <div className="slidebar-content">
-                <ul class="list-group">
-                  <li class="list-group-item">An item</li>
-                  <li class="list-group-item">A second item</li>
-                  <li class="list-group-item">A third item</li>
-                  <li class="list-group-item">A fourth item</li>
-                  <li class="list-group-item">And a fifth one</li>
+                <ul className="list-group">
+                  {category.map((category, index) => (
+                    <li key={index} className="list-group-item">
+                      {category.name}
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
           </div>
 
-          <div class="col-md-10 col-sm-9">
-            <div class="section-title a-center">
-              <h2>Guitar</h2>
+          <div className="col-md-10 col-sm-9">
+            <div className="section-title a-center">
+              <h2>Instrument</h2>
+            </div>
+
+            <div className="container text-center">
+              <div className="row row-cols-5">
+                {item.map((item, index) => (
+                  <CardItem key={index} item={item} />
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -35,6 +76,6 @@ export default function HomeProducts() {
     </div>
   );
 }
-<h2 class="title-head margin-top-0">
+<h2 className="title-head margin-top-0">
   <span>Nhạc cụ</span>
 </h2>;

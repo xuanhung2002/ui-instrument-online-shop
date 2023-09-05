@@ -3,19 +3,19 @@ import "../styles/Header.scss";
 export default function Hearder() {
   return (
     <div>
-      <nav class="navbar bg-black py-1 shadow-sm text-light">
-        <div class="container">
-          <div class="d-flex justify-content-start">
-            <ul class="navbar-nav nav d-flex flex-row">
-              <li class="header-info ms-3 d-none d-md-block">
+      <nav className="navbar bg-black py-1 shadow-sm text-light">
+        <div className="container">
+          <div className="d-flex justify-content-start">
+            <ul className="navbar-nav nav d-flex flex-row">
+              <li className="header-info ms-3 d-none d-md-block">
                 <i className="header-info-item fa fa-map-marker text-warning me-1"></i>
                 K256/49/9 Âu Cơ, Hoà Khánh Bắc, Liên Chiểu, Đà Nẵng
               </li>
-              <li class="header-info ms-3 d-none d-lg-block">
+              <li className="header-info ms-3 d-none d-lg-block">
                 <i className="header-info-item fa fa-phone text-warning me-1"></i>
                 0384651408
               </li>
-              <li class="header-info ms-3 d-none d-lg-block">
+              <li className="header-info ms-3 d-none d-lg-block">
                 <i className="header-info-item fa fa-clock-o text-warning me-1"></i>
                 7:20 - 20:30
               </li>
