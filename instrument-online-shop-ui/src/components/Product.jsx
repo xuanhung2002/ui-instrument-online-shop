@@ -7,7 +7,7 @@ import {
   API_GET_ALL_ITEM,
 } from "../service/api";
 
-export default function HomeProducts() {
+export default function Product() {
   const [category, setCategory] = useState([]);
   const [item, setItem] = useState([]);
   const [brand, setBrand] = useState([]);
@@ -61,11 +61,12 @@ export default function HomeProducts() {
       console.log("Error when fetching data: ", error);
     }
   };
+
   return (
     <div className="mb-5">
       <div className="container text-center mt-4">
         <div className="row">
-          {/* <div className="col-md-2 col-sm-3 hidden-xs">
+          <div className="col-md-2 col-sm-3 hidden-xs">
             <div className="slidebar-item">
               <div className="slidebar-title">
                 <h2 className="title-head margin-top-0">
@@ -109,14 +110,13 @@ export default function HomeProducts() {
                 </ul>
               </div>
             </div>
-          </div> */}
-
-          <div className="section-title mb-3 mt-4 d-flex justify-content-sm-center">
-            <i class="fa fa-caret-right mt-3" aria-hidden="true"></i>
-            <h2 className="ms-1 me-1">Products</h2>
-            <i class="fa fa-caret-left mt-3" aria-hidden="true"></i>
           </div>
+
           <div className="col-md-10 col-sm-9">
+            <div className="section-title a-center">
+              <h2>Instrument</h2>
+            </div>
+
             <div className="container text-center">
               <div className="row row-cols-5">
                 {Array.isArray(item) && item.length > 0 ? (
