@@ -1,17 +1,29 @@
-import './App.scss';
-import Header from './components/Header';
-import Home from './components/Home';
-import HomeProducts from './components/HomeProducts';
-import Navbar from './components/Navbar';
-
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.scss";
+import Login from "./components/Login";
+import HomePage from "./pages/user/HomePage";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
+import Register from "./components/Register";
+import 'react-toastify/dist/ReactToastify.css';
+import DetailsProduct from "./components/DetailsProduct";
+import Cart from "./components/Cart";
+import Product from "./components/Product";
 function App() {
   return (
-    <>
-      <Header/>
-      <Navbar/>
-      <Home/>
-      <HomeProducts/>
-    </>
+    <BrowserRouter> 
+        <Header />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/product/:id" element={<DetailsProduct />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/product" element={<Product />} />
+        </Routes>
+        <Footer />
+    </BrowserRouter>
   );
 }
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export default function Home() {
+export default function SliderHome() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handlePrevClick = () => {
