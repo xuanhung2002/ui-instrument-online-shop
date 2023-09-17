@@ -1,4 +1,4 @@
-const RootURL = "http://localhost:8080";
+import RootURL from "../config/config";
 export const API_GET_ALL_ITEM = RootURL + "/api/item";
 export const API_GET_ALL_CATEGORY = RootURL + "/api/category";
 export const API_GET_ALL_BRAND = RootURL + "/api/brand";
