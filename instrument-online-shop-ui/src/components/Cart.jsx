@@ -1,6 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { API_GET_CART_ITEM } from "../service/api";
+import {
+  API_GET_CART_ITEM,
+  API_REMOVE_CART_ITEM_FROM_CART,
+} from "../service/api";
 import { useNavigate } from "react-router-dom";
 
 function Cart() {
@@ -9,7 +12,7 @@ function Cart() {
   const navigate = useNavigate();
   useEffect(() => {
     fetchCartItem();
-  }, []);
+  }, [cartItems]);
 
   const fetchCartItem = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -68,20 +71,45 @@ function Cart() {
 
   const calculateTotalPrice = () => {
     let total = 0;
+    if (!cartItems) {
+      return 0;
+    }
     cartItems.forEach((cartItem) => {
       total += cartItem.quantity * cartItem.unitPrice;
     });
     return total;
   };
 
-  const handleRemoveItem = (cartItemId) => {
-    const shouldRemove = window.confirm(
-      "Bạn có chắc chắn muốn xóa mặt hàng này khỏi giỏ hàng?"
-    );
-    if (shouldRemove) {
-      setCartItems((prevCartItems) =>
-        prevCartItems.filter((cartItem) => cartItem.id !== cartItemId)
-      );
+  const handleRemoveItem = async (cartItemId) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.token) {
+      setIsLoggedIn(true);
+      const userToken = user.token;
+      try {
+        const axiosInstance = axios.create({
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+
+        const respone = await axiosInstance.delete(
+          API_REMOVE_CART_ITEM_FROM_CART + cartItemId
+        );
+        if (respone && respone.status === 200) {
+          setCartItems(respone.data);
+        } else {
+          console.error("Xoa khong thanh cong");
+        }
+      } catch (error) {
+        console.error("Xoa khong thanh cong");
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+    try {
+      // console.log("check respone: ", response); // Axios đã tự động chuyển đổi dữ liệu JSON
+    } catch (error) {
+      console.log("Error when fetching data: ", error);
     }
   };
 
