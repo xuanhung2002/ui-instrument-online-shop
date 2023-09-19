@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
   API_GET_CART_ITEM,
   API_REMOVE_CART_ITEM_FROM_CART,
+  API_UPDATE_CART_ITEM_QUANTITY,
 } from "../service/api";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +13,7 @@ function Cart() {
   const navigate = useNavigate();
   useEffect(() => {
     fetchCartItem();
-  }, [cartItems]);
+  }, []);
 
   const fetchCartItem = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -45,33 +46,74 @@ function Cart() {
     }
   };
 
+  const saveCartToLocalStorage = (cartData) => {
+    localStorage.setItem("cartItems", JSON.stringify(cartData));
+  };
+
   // / Hàm để tăng số lượng cho một item cụ thể
   const handlePlusQuantity = (cartItemId) => {
     setCartItems((prevCartItems) =>
       prevCartItems.map((cartItem) => {
         if (cartItem.itemId === cartItemId) {
-          return { ...cartItem, quantity: cartItem.quantity + 1 };
+          const newQuantity = cartItem.quantity + 1;
+          return { ...cartItem, quantity: newQuantity };
         }
         return cartItem;
       })
     );
   };
-
   // Hàm để giảm số lượng cho một item cụ thể
   const handleSubtractQuantity = (cartItemId) => {
     setCartItems((prevCartItems) =>
       prevCartItems.map((cartItem) => {
         if (cartItem.itemId === cartItemId && cartItem.quantity > 0) {
-          return { ...cartItem, quantity: cartItem.quantity - 1 };
+          const newQuantity = cartItem.quantity - 1;
+          return { ...cartItem, quantity: newQuantity };
         }
         return cartItem;
       })
     );
   };
+  const updateCartItem = async (cartItemId, newQuantity) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.token) {
+      setIsLoggedIn(true);
+      const userToken = user.token;
+      try {
+        const axiosInstance = axios.create({
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+
+        const respone = await axiosInstance.post(
+          API_UPDATE_CART_ITEM_QUANTITY,
+          {
+            cartItemId: cartItemId,
+            newQuantity: newQuantity,
+          }
+        );
+        if (respone && respone.status === 200) {
+          setCartItems(respone.data);
+        } else {
+          console.error("Update that bai");
+        }
+      } catch (error) {
+        console.error("Update that bai");
+      }
+    } else {
+      setIsLoggedIn(false);
+    }
+    try {
+      // console.log("check respone: ", response); // Axios đã tự động chuyển đổi dữ liệu JSON
+    } catch (error) {
+      console.log("Error when fetching data: ", error);
+    }
+  };
 
   const calculateTotalPrice = () => {
     let total = 0;
-    if (!cartItems) {
+    if (!Array.isArray(cartItems)) {
       return 0;
     }
     cartItems.forEach((cartItem) => {
