@@ -13,6 +13,7 @@ import { loginApi } from "../service/UserService";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { handleLogin } from "../service/AuthService";
 
 function Login() {
   // const [username, setUsername] = useState("");
@@ -31,29 +32,6 @@ function Login() {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const handleLogin = async (data) => {
-    try {
-      const res = await loginApi(data.username, data.password);
-      console.log("check respone: ", res);
-
-      if (res && res.data.accessToken) {
-        const user = {
-          token: res.data.accessToken,
-          username: data.username,
-        };
-        localStorage.setItem("user", JSON.stringify(user));
-      } else {
-        if (res && res.status !== 200) {
-          toast.error(res.data.error);
-        }
-      }
-      // Điều hướng tới trang sau khi đăng nhập thành công
-      window.location.href = "/";
-    } catch (error) {
-      // Xử lý lỗi đăng nhập
-      toast.error("Username/password is not valid");
-    }
-  };
   return (
     <MDBContainer fluid className="p-3 my-5 h-custom">
       <ToastContainer />
