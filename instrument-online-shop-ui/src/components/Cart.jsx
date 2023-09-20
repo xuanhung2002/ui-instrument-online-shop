@@ -6,10 +6,14 @@ import {
   API_UPDATE_CART_ITEM_QUANTITY,
 } from "../service/api";
 import { useNavigate } from "react-router-dom";
+import { MDBInput } from "mdb-react-ui-kit";
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const [selectedItemIds, setSelectedItemIds] = useState([]); // Danh sách các ID của các mục được chọn
+
   const navigate = useNavigate();
   useEffect(() => {
     fetchCartItem();
@@ -155,6 +159,32 @@ function Cart() {
     }
   };
 
+  const handleCheckboxChange = (cartItemId) => {
+    // Kiểm tra xem cartItemId đã có trong danh sách selectedItemIds chưa
+    if (selectedItemIds.includes(cartItemId)) {
+      // Nếu đã có, loại bỏ nó khỏi danh sách
+      setSelectedItemIds((prevSelectedItems) =>
+        prevSelectedItems.filter((id) => id !== cartItemId)
+      );
+    } else {
+      // Nếu chưa có, thêm nó vào danh sách
+      setSelectedItemIds((prevSelectedItems) => [
+        ...prevSelectedItems,
+        cartItemId,
+      ]);
+    }
+  };
+  // Hàm để tính subtotal cho các mục được chọn
+  const calculateSelectedSubtotal = () => {
+    let total = 0;
+    cartItems.forEach((cartItem) => {
+      if (selectedItemIds.includes(cartItem.id)) {
+        total += cartItem.quantity * cartItem.unitPrice;
+      }
+    });
+    return total;
+  };
+
   return (
     <div className="container padding-bottom-3x mb-1">
       <div className="d-flex justify-content-center mt-5">
@@ -172,6 +202,7 @@ function Cart() {
                   Clear Cart
                 </a>
               </th>
+              <th className="text-center">Select</th>
             </tr>
           </thead>
           <tbody>
@@ -235,6 +266,16 @@ function Cart() {
                       <i className="fa fa-trash"></i>
                     </button>
                   </td>
+                  <td className=" text-center">
+                    <input
+                      className="form-check-input my-5"
+                      type="checkbox"
+                      value=""
+                      id="flexCheckIndeterminate"
+                      checked={selectedItemIds.includes(cartItem.id)}
+                      onChange={() => handleCheckboxChange(cartItem.id)}
+                    />
+                  </td>
                 </tr>
               ))
             ) : (
@@ -247,7 +288,7 @@ function Cart() {
         <div className="d-flex justify-content-end text-lg mb-4 me-5">
           <p className="mt-1">Subtotal:</p>
           <span className="text-medium fw-bold fs-5">
-            {"  "}${calculateTotalPrice()}
+            {"  "}${calculateSelectedSubtotal()}
           </span>
         </div>
       </div>
