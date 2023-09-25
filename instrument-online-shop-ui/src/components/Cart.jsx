@@ -11,8 +11,7 @@ import { MDBInput } from "mdb-react-ui-kit";
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const [selectedItemIds, setSelectedItemIds] = useState([]); // Danh sách các ID của các mục được chọn
+  const [selectedCartItems, setSelectedCartItems] = useState([]); // Danh sách các ID của các mục được chọn
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -115,17 +114,6 @@ function Cart() {
     }
   };
 
-  const calculateTotalPrice = () => {
-    let total = 0;
-    if (!Array.isArray(cartItems)) {
-      return 0;
-    }
-    cartItems.forEach((cartItem) => {
-      total += cartItem.quantity * cartItem.unitPrice;
-    });
-    return total;
-  };
-
   const handleRemoveItem = async (cartItemId) => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user && user.token) {
@@ -159,18 +147,18 @@ function Cart() {
     }
   };
 
-  const handleCheckboxChange = (cartItemId) => {
-    // Kiểm tra xem cartItemId đã có trong danh sách selectedItemIds chưa
-    if (selectedItemIds.includes(cartItemId)) {
+  const handleCheckboxChange = (cartItem) => {
+    // Kiểm tra xem cartItemId đã có trong danh sách selectedCartItems chưa
+    if (selectedCartItems.some((item) => item.id === cartItem.id)) {
       // Nếu đã có, loại bỏ nó khỏi danh sách
-      setSelectedItemIds((prevSelectedItems) =>
-        prevSelectedItems.filter((id) => id !== cartItemId)
+      setSelectedCartItems((prevSelectedCartItems) =>
+        prevSelectedCartItems.filter((s) => s.id !== cartItem.id)
       );
     } else {
       // Nếu chưa có, thêm nó vào danh sách
-      setSelectedItemIds((prevSelectedItems) => [
-        ...prevSelectedItems,
-        cartItemId,
+      setSelectedCartItems((prevSelectedCartItems) => [
+        ...prevSelectedCartItems,
+        cartItem,
       ]);
     }
   };
@@ -178,17 +166,33 @@ function Cart() {
   const calculateSelectedSubtotal = () => {
     let total = 0;
     cartItems.forEach((cartItem) => {
-      if (selectedItemIds.includes(cartItem.id)) {
+      if (selectedCartItems.some((item) => item.id === cartItem.id)) {
         total += cartItem.quantity * cartItem.unitPrice;
       }
     });
     return total;
   };
 
+  const handleBuyClick = () => {
+    localStorage.setItem(
+      "selectedCartItems",
+      JSON.stringify(selectedCartItems)
+    );
+    navigate("/order");
+  };
+
+  // Hàm để kiểm tra xem nút "Buy" có nên được bật hay không
+  const shouldEnableBuyButton = selectedCartItems.length > 0;
+
   return (
     <div className="container padding-bottom-3x mb-1">
       <div className="d-flex justify-content-center mt-5">
         <h3>Cart</h3>
+      </div>
+      <div className="mt-2 mb-5 d-flex justify-content-end">
+        <button className="btn btn-warning me-4 ps-5 pe-5 " onClick={"/"}>
+          My order
+        </button>
       </div>
       <div className="table-responsive shopping-cart">
         <table className="table">
@@ -272,8 +276,10 @@ function Cart() {
                       type="checkbox"
                       value=""
                       id="flexCheckIndeterminate"
-                      checked={selectedItemIds.includes(cartItem.id)}
-                      onChange={() => handleCheckboxChange(cartItem.id)}
+                      checked={selectedCartItems.some(
+                        (item) => item.id === cartItem.id
+                      )}
+                      onChange={() => handleCheckboxChange(cartItem)}
                     />
                   </td>
                 </tr>
@@ -303,7 +309,13 @@ function Cart() {
             </a>
           </div>
           <div className="float-right">
-            <a className="btn btn-success me-4 ps-5 pe-5">Buy</a>
+            <button
+              className="btn btn-success me-4 ps-5 pe-5"
+              onClick={handleBuyClick}
+              disabled={!shouldEnableBuyButton}
+            >
+              Buy
+            </button>
           </div>
         </div>
       </div>

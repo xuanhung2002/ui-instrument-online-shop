@@ -1,10 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { API_GET_CART_ITEM } from "../service/api";
 
 function Hearder() {
   const [user, setUser] = useState();
-
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [countCartItem, setCountCartItem] = useState();
   useEffect(() => {
     const user = localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user"))
@@ -12,7 +16,31 @@ function Hearder() {
     if (user) {
       setUser(user);
     }
+    fetchCountCartItem();
   }, []);
+
+  const fetchCountCartItem = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.token) {
+      const userToken = user.token;
+      try {
+        const axiosInstance = axios.create({
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+
+        const response = await axiosInstance.get(API_GET_CART_ITEM);
+        if (response && response.status === 200) {
+          setCountCartItem(response.data.length);
+        } else {
+          setCountCartItem(0);
+        }
+      } catch (error) {
+        setCountCartItem(0);
+      }
+    }
+  };
 
   const handleLogout = () => {
     if (user) {
@@ -20,6 +48,16 @@ function Hearder() {
       window.location.reload();
     }
   };
+
+  const handleGoToCart = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.token) {
+      navigate("/cart");
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <div>
       <div className="fixed-top">
@@ -158,8 +196,17 @@ function Hearder() {
                 </li>
               </ul>
               <div className="cart-item" style={{}}>
-                <a href="/cart" className="btn btn-outline-dark">
-                  <i className="fa fa-shopping-cart" aria-hidden="true"></i> (0)
+                <a
+                  onClick={() => handleGoToCart()}
+                  className="btn btn-outline-dark d-flex flex-row"
+                >
+                  <i className="fa fa-shopping-cart" aria-hidden="true"></i>
+                  {""}
+                  <span className="ms-1 ">
+                    {"("}
+                    {countCartItem}
+                    {")"}
+                  </span>
                 </a>
               </div>
             </div>
