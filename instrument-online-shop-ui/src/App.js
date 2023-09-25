@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import DetailsProduct from "./components/DetailsProduct";
 import Cart from "./components/Cart";
 import Product from "./components/Product";
+import Order from "./components/Order";
 function App() {
   return (
     <BrowserRouter> 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/product" element={<Product />} />
+          <Route path="/order" element={<Order />} />
         </Routes>
         <Footer />
     </BrowserRouter>
