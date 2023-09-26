@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { getDetailsItemApi } from "../service/UserService";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { API_ADD_ITEM_TO_CART } from "../service/api";
+import { AppContext } from "../context/AppProvider";
 
 function DetailsProduct() {
+  const { fetchCountCartItem } = useContext(AppContext);
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const navigate = useNavigate();
@@ -56,6 +58,7 @@ function DetailsProduct() {
           quantity: quantity,
         });
         if (response.status === 200) {
+          fetchCountCartItem();
           toast.success("Thêm vào giỏ hàng thành công");
           console.log("Sản phẩm đã được thêm vào giỏ hàng.");
         } else {
@@ -121,7 +124,10 @@ function DetailsProduct() {
                           Back
                         </button>{" "}
                       </div>{" "}
-                      <i className="fa fa-shopping-cart text-muted"></i>
+                      <Link
+                        to={"/cart"}
+                        className="fa fa-shopping-cart text-muted"
+                      ></Link>
                     </div>
                     <div className="mt-4 mb-3">
                       <div className="text-uppercase fw-bold fs-3">
@@ -134,9 +140,8 @@ function DetailsProduct() {
                       <h5 className="text-uppercase">{""}</h5>
                       <div className="price d-flex flex-row align-items-center">
                         {" "}
-                        <span className="act-price fs-3">
-                          {product.price}{" "}
-                          <i class="fa fa-usd" aria-hidden="true"></i>
+                        <span className="act-price fs-3 text-warning">
+                          {product.price} <i aria-hidden="true">&#8363;</i>
                         </span>
                       </div>
                     </div>

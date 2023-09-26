@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   API_GET_CART_ITEM,
   API_REMOVE_CART_ITEM_FROM_CART,
@@ -7,11 +7,14 @@ import {
 } from "../service/api";
 import { useNavigate } from "react-router-dom";
 import { MDBInput } from "mdb-react-ui-kit";
+import { AppContext } from "../context/AppProvider";
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [selectedCartItems, setSelectedCartItems] = useState([]); // Danh sách các ID của các mục được chọn
+  const [selectedCartItems, setSelectedCartItems] = useState([]);
+  const { countCartItem, setCountCartItem, fetchCountCartItem } =
+    useContext(AppContext); // Danh sách các ID của các mục được chọn
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -33,6 +36,7 @@ function Cart() {
         const respone = await axiosInstance.get(API_GET_CART_ITEM);
         if (respone && respone.status === 200) {
           setCartItems(respone.data);
+          fetchCountCartItem();
         } else {
           console.error("Không có gì trong giỏ hàng.");
         }
@@ -49,8 +53,36 @@ function Cart() {
     }
   };
 
-  const saveCartToLocalStorage = (cartData) => {
-    localStorage.setItem("cartItems", JSON.stringify(cartData));
+  const handleUpdateNewQuantity = async (cartItemId, newQuantity) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.token) {
+      const userToken = user.token;
+      try {
+        const axiosInstance = axios.create({
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+
+        const respone = await axiosInstance.post(
+          API_UPDATE_CART_ITEM_QUANTITY,
+          {
+            cartItemId,
+            newQuantity,
+          }
+        );
+
+        if (respone && respone.status === 200) {
+          console.log("Update success");
+        } else {
+          console.log("Error when update");
+        }
+      } catch (error) {
+        console.log("Error when call API update");
+      }
+    } else {
+      console.log("Vui long dang nhap");
+    }
   };
 
   // / Hàm để tăng số lượng cho một item cụ thể
@@ -59,6 +91,7 @@ function Cart() {
       prevCartItems.map((cartItem) => {
         if (cartItem.itemId === cartItemId) {
           const newQuantity = cartItem.quantity + 1;
+          handleUpdateNewQuantity(cartItemId, newQuantity);
           return { ...cartItem, quantity: newQuantity };
         }
         return cartItem;
@@ -71,50 +104,34 @@ function Cart() {
       prevCartItems.map((cartItem) => {
         if (cartItem.itemId === cartItemId && cartItem.quantity > 0) {
           const newQuantity = cartItem.quantity - 1;
-          return { ...cartItem, quantity: newQuantity };
+          if (newQuantity === 0) {
+            handleRemoveCartItem(cartItemId);
+            removeCartItem(cartItemId);
+            return cartItems;
+          } else {
+            handleUpdateNewQuantity(cartItemId, newQuantity);
+            return { ...cartItem, quantity: newQuantity };
+          }
         }
         return cartItem;
       })
     );
   };
-  const updateCartItem = async (cartItemId, newQuantity) => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user && user.token) {
-      setIsLoggedIn(true);
-      const userToken = user.token;
-      try {
-        const axiosInstance = axios.create({
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        });
-
-        const respone = await axiosInstance.post(
-          API_UPDATE_CART_ITEM_QUANTITY,
-          {
-            cartItemId: cartItemId,
-            newQuantity: newQuantity,
+  const removeCartItem = (cartItemId) => {
+    setCartItems((prevCartItems) =>
+      prevCartItems.filter((cartItem) => {
+        if (cartItem.itemId === cartItemId) {
+          if (cartItem.quantity === 0) {
+            return false;
           }
-        );
-        if (respone && respone.status === 200) {
-          setCartItems(respone.data);
-        } else {
-          console.error("Update that bai");
+          return true;
         }
-      } catch (error) {
-        console.error("Update that bai");
-      }
-    } else {
-      setIsLoggedIn(false);
-    }
-    try {
-      // console.log("check respone: ", response); // Axios đã tự động chuyển đổi dữ liệu JSON
-    } catch (error) {
-      console.log("Error when fetching data: ", error);
-    }
+        return true;
+      })
+    );
   };
 
-  const handleRemoveItem = async (cartItemId) => {
+  const handleRemoveCartItem = async (cartItemId) => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user && user.token) {
       setIsLoggedIn(true);
@@ -130,7 +147,7 @@ function Cart() {
           API_REMOVE_CART_ITEM_FROM_CART + cartItemId
         );
         if (respone && respone.status === 200) {
-          setCartItems(respone.data);
+          setCartItems(fetchCartItem);
         } else {
           console.error("Xoa khong thanh cong");
         }
@@ -165,12 +182,14 @@ function Cart() {
   // Hàm để tính subtotal cho các mục được chọn
   const calculateSelectedSubtotal = () => {
     let total = 0;
-    cartItems.forEach((cartItem) => {
-      if (selectedCartItems.some((item) => item.id === cartItem.id)) {
-        total += cartItem.quantity * cartItem.unitPrice;
-      }
-    });
-    return total;
+    if (Array.isArray(cartItems)) {
+      cartItems.forEach((cartItem) => {
+        if (selectedCartItems.some((item) => item.id === cartItem.id)) {
+          total += cartItem.quantity * cartItem.unitPrice;
+        }
+      });
+      return total;
+    }
   };
 
   const handleBuyClick = () => {
@@ -260,11 +279,11 @@ function Cart() {
                   </td>
                   <td className="text-center">
                     <button
-                      onClick={() => handleRemoveItem(cartItem.itemId)}
+                      onClick={() => handleRemoveCartItem(cartItem.itemId)}
                       style={{ backgroundColor: "white" }}
                       className="remove-from-cart mt-5 border-0"
                       data-toggle="tooltip"
-                      title=""
+                      title="Remove"
                       data-original-title="Remove item"
                     >
                       <i className="fa fa-trash"></i>

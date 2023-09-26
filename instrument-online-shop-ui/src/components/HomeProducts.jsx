@@ -118,7 +118,7 @@ export default function HomeProducts() {
           </div>
           <div className="col-md-10 col-sm-9">
             <div className="container text-center">
-              <div className="row row-cols-5">
+              <div className="row row-cols-4">
                 {Array.isArray(item) && item.length > 0 ? (
                   item.map((item, index) => (
                     <CardItem key={index} item={item} />
