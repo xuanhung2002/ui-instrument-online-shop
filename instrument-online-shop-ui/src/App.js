@@ -11,9 +11,11 @@ import DetailsProduct from "./components/DetailsProduct";
 import Cart from "./components/Cart";
 import Product from "./components/Product";
 import Order from "./components/Order";
+import AppProvider from "./context/AppProvider";
 function App() {
   return (
     <BrowserRouter> 
+      <AppProvider>
         <Header />
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -25,6 +27,7 @@ function App() {
           <Route path="/order" element={<Order />} />
         </Routes>
         <Footer />
+      </AppProvider>
     </BrowserRouter>
   );
 }

@@ -14,15 +14,31 @@ const CardItem = ({ item }) => {
           src={item.images && item.images[0] ? item.images[0].imageUrl : ""}
           className="card-img-top"
           alt="Sản phẩm"
-          style={{ height: "150px" }}
+          style={{ height: "200px" }}
         />
 
         <div className="card-body">
-          <h5 className="card-title">{item.name}</h5>
-          <p className="card-text">
-            <strong>Giá: {item.price}</strong>
-          </p>
-          <Link to={`/product/${item.id}`} className="btn btn-primary">
+          <div className="">
+            <Link
+              to={`/product/${item.id}`}
+              className="text-decoration-none"
+              style={{ color: "#000000", fontWeight: "bold" }}
+            >
+              <span className="item-name" title={item.name}>
+                {item.name}
+              </span>
+            </Link>
+          </div>
+
+          <div>
+            {" "}
+            <span className="card-text p-1 mt-2 mb-2">
+              Price:{" "}
+              <strong style={{ color: "#FF3333" }}>{item.price} &#8363;</strong>
+            </span>
+          </div>
+
+          <Link to={`/product/${item.id}`} className="btn btn-primary mt-2">
             Mua ngay
           </Link>
         </div>

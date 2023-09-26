@@ -1,14 +1,16 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_GET_CART_ITEM } from "../service/api";
+import { AppContext } from "../context/AppProvider";
 
 function Hearder() {
   const [user, setUser] = useState();
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [countCartItem, setCountCartItem] = useState();
+  const { countCartItem, setCountCartItem, fetchCountCartItem } =
+    useContext(AppContext);
   useEffect(() => {
     const user = localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user"))
@@ -17,30 +19,30 @@ function Hearder() {
       setUser(user);
     }
     fetchCountCartItem();
-  }, []);
+  }, [countCartItem]);
 
-  const fetchCountCartItem = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user && user.token) {
-      const userToken = user.token;
-      try {
-        const axiosInstance = axios.create({
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        });
+  // const fetchCountCartItem = async () => {
+  //   const user = JSON.parse(localStorage.getItem("user"));
+  //   if (user && user.token) {
+  //     const userToken = user.token;
+  //     try {
+  //       const axiosInstance = axios.create({
+  //         headers: {
+  //           Authorization: `Bearer ${userToken}`,
+  //         },
+  //       });
 
-        const response = await axiosInstance.get(API_GET_CART_ITEM);
-        if (response && response.status === 200) {
-          setCountCartItem(response.data.length);
-        } else {
-          setCountCartItem(0);
-        }
-      } catch (error) {
-        setCountCartItem(0);
-      }
-    }
-  };
+  //       const response = await axiosInstance.get(API_GET_CART_ITEM);
+  //       if (response && response.status === 200) {
+  //         setCountCartItem(response.data.length);
+  //       } else {
+  //         setCountCartItem(0);
+  //       }
+  //     } catch (error) {
+  //       setCountCartItem(0);
+  //     }
+  //   }
+  // };
 
   const handleLogout = () => {
     if (user) {
