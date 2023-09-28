@@ -66,7 +66,7 @@ export default function Product() {
     <div className="mb-5">
       <div className="container text-center mt-4">
         <div className="row">
-          <div className="col-md-2 col-sm-3 hidden-xs">
+          <div className="col-md-2 col-sm-3 d-none d-md-block">
             <div className="slidebar-item">
               <div className="slidebar-title">
                 <h2 className="title-head margin-top-0">
@@ -112,16 +112,18 @@ export default function Product() {
             </div>
           </div>
 
-          <div className="col-md-10 col-sm-9">
+          <div className="col-md-10 col-sm-12">
             <div className="section-title a-center">
               <h2>Instrument</h2>
             </div>
 
             <div className="container text-center">
-              <div className="row row-cols-5">
+              <div className="row">
                 {Array.isArray(item) && item.length > 0 ? (
                   item.map((item, index) => (
-                    <CardItem key={index} item={item} />
+                    <div className="col-lg-3 col-md-4 col-sm-4 col-6 mb-3">
+                      <CardItem key={index} item={item} />
+                    </div>
                   ))
                 ) : (
                   <p>No items to display.</p>

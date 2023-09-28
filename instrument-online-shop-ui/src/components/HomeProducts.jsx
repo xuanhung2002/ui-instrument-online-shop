@@ -65,63 +65,21 @@ export default function HomeProducts() {
     <div className="mb-5">
       <div className="container text-center mt-4">
         <div className="row">
-          {/* <div className="col-md-2 col-sm-3 hidden-xs">
-            <div className="slidebar-item">
-              <div className="slidebar-title">
-                <h2 className="title-head margin-top-0">
-                  <span>Category</span>
-                </h2>
-              </div>
-
-              <div className="slidebar-content">
-                <ul className="list-group">
-                  {category.map((category, index) => (
-                    <li key={index} className="list-group-item">
-                      <a
-                        href=""
-                        style={{ textDecoration: "none", color: "#000" }}
-                      >
-                        {category.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <div className="slidebar-item mt-3">
-              <div className="slidebar-title">
-                <h2 className="title-head margin-top-0">
-                  <span>Brand</span>
-                </h2>
-              </div>
-              <div className="slidebar-content">
-                <ul className="list-group">
-                  {brand.map((brand, index) => (
-                    <li key={index} className="list-group-item">
-                      <a
-                        href=""
-                        style={{ textDecoration: "none", color: "#000" }}
-                      >
-                        {brand.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div> */}
-
-          <div className="section-title mb-3 mt-4 d-flex justify-content-sm-center">
+          <div className="col-sm-12 section-title mb-3 mt-4 d-flex justify-content-center">
             <i class="fa fa-caret-right mt-3" aria-hidden="true"></i>
             <h2 className="ms-1 me-1">Products</h2>
             <i class="fa fa-caret-left mt-3" aria-hidden="true"></i>
           </div>
-          <div className="col-md-10 col-sm-9">
+        </div>
+        <div className="row">
+          <div className="col-12">
             <div className="container text-center">
-              <div className="row row-cols-4">
+              <div className="row">
                 {Array.isArray(item) && item.length > 0 ? (
                   item.map((item, index) => (
-                    <CardItem key={index} item={item} />
+                    <div className="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+                      <CardItem key={index} item={item} />
+                    </div>
                   ))
                 ) : (
                   <p>No items to display.</p>
