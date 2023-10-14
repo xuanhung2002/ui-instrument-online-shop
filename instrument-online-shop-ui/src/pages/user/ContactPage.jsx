@@ -1,15 +1,13 @@
 import React from "react";
-import SliderHome from "../../components/SliderHome";
-import HomeProducts from "../../components/HomeProducts";
+import Contact from "../../components/Contact";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
-export default function HomePage() {
+export default function ContactPage() {
   return (
     <div>
       <Header />
-      <SliderHome />
-      <HomeProducts />
+      <Contact />
       <Footer />
     </div>
   );

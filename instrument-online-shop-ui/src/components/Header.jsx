@@ -21,29 +21,6 @@ function Hearder() {
     fetchCountCartItem();
   }, [countCartItem]);
 
-  // const fetchCountCartItem = async () => {
-  //   const user = JSON.parse(localStorage.getItem("user"));
-  //   if (user && user.token) {
-  //     const userToken = user.token;
-  //     try {
-  //       const axiosInstance = axios.create({
-  //         headers: {
-  //           Authorization: `Bearer ${userToken}`,
-  //         },
-  //       });
-
-  //       const response = await axiosInstance.get(API_GET_CART_ITEM);
-  //       if (response && response.status === 200) {
-  //         setCountCartItem(response.data.length);
-  //       } else {
-  //         setCountCartItem(0);
-  //       }
-  //     } catch (error) {
-  //       setCountCartItem(0);
-  //     }
-  //   }
-  // };
-
   const handleLogout = () => {
     if (user) {
       localStorage.removeItem("user");
@@ -108,7 +85,7 @@ function Hearder() {
               </div>
             ) : (
               <div className="buttons me-5 float-right">
-                <ul className="nav align-items-center">
+                <ul className="nav align-items-center d-flex justify-content-between">
                   <li className="button nav-item">
                     <Link
                       to="/login"
@@ -174,7 +151,7 @@ function Hearder() {
                 <li className="nav-item logo">
                   <Link to="/" className="nav-link">
                     <img
-                      src="./assets/logo.png"
+                      src="/assets/logo.png"
                       alt="logo"
                       style={{ maxHeight: "160px" }}
                     />
@@ -184,7 +161,7 @@ function Hearder() {
                   className="nav-item collapse navbar-collapse ms-4"
                   id="navbarNavDropdown"
                 >
-                  <a className="nav-link" href="#">
+                  <a className="nav-link" href="/brand">
                     BRAND
                   </a>
                 </li>
@@ -192,7 +169,7 @@ function Hearder() {
                   className="nav-item collapse navbar-collapse ms-3"
                   id="navbarNavDropdown"
                 >
-                  <a className="nav-link" href="#">
+                  <a className="nav-link" href="/contact">
                     CONTACT
                   </a>
                 </li>

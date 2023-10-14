@@ -62,7 +62,12 @@
 .item-name:hover {
   opacity: 1;
   color: #FFCC00;
-
+}
+.hover-pointer:hover {
+  cursor: pointer; /* Chuyển trỏ chuột thành bàn tay khi hover */
+}
+.sort-pointer:hover{
+  cursor: pointer;
 }
 
 
