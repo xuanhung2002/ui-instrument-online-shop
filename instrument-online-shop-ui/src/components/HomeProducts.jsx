@@ -14,6 +14,8 @@ export default function HomeProducts() {
 
   useEffect(() => {
     fetchCategory();
+    fetchItem();
+    fetchBrand();
   }, []);
 
   const fetchCategory = async () => {
@@ -25,13 +27,13 @@ export default function HomeProducts() {
     }
   };
 
-  useEffect(() => {
-    fetchItem();
-  }, []);
-
   const fetchItem = async () => {
     try {
-      const response = await axios.get(API_GET_ALL_ITEM); // Sử dụng axios.get thay cho fetch
+      const response = await axios.get(API_GET_ALL_ITEM, {
+        params: {
+          size: 20,
+        },
+      }); // Sử dụng axios.get thay cho fetch
       const jsonData = response.data;
       if (jsonData === null || !Object.keys(jsonData).length) {
         console.log("API returned null or empty data.");
@@ -43,11 +45,7 @@ export default function HomeProducts() {
     }
   };
 
-  useEffect(() => {
-    fetchCBrand();
-  }, []);
-
-  const fetchCBrand = async () => {
+  const fetchBrand = async () => {
     try {
       const response = await axios.get(API_GET_ALL_BRAND); // Sử dụng axios.get thay cho fetch
       const jsonData = response.data;
@@ -65,9 +63,11 @@ export default function HomeProducts() {
     <div className="mb-5">
       <div className="container text-center mt-4">
         <div className="row">
-          <div className="col-sm-12 section-title mb-3 mt-4 d-flex justify-content-center">
+          <div className="col-sm-12 section-title mb-3 mt-5 d-flex justify-content-center">
             <i class="fa fa-caret-right mt-3" aria-hidden="true"></i>
-            <h2 className="ms-1 me-1">Products</h2>
+            <h2 className="ms-1 me-1 mb-5 text-uppercase">
+              Best selling products
+            </h2>
             <i class="fa fa-caret-left mt-3" aria-hidden="true"></i>
           </div>
         </div>
@@ -77,7 +77,7 @@ export default function HomeProducts() {
               <div className="row">
                 {Array.isArray(item) && item.length > 0 ? (
                   item.map((item, index) => (
-                    <div className="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+                    <div className="col-lg-3 col-md-4 col-sm-6 col-6 mb-3">
                       <CardItem key={index} item={item} />
                     </div>
                   ))
@@ -92,6 +92,3 @@ export default function HomeProducts() {
     </div>
   );
 }
-<h2 className="title-head margin-top-0">
-  <span>Nhạc cụ</span>
-</h2>;

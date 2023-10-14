@@ -1,13 +1,14 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_ADD_ORDER } from "../service/api";
+import { API_ADD_ORDER, API_GET_PAYMENT_REQ } from "../service/api";
 
 export default function Order() {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [phone, setPhone] = useState(""); // Giá trị mặc định
+  const [paymentStatus, setPaymentStatus] = useState("pending");
 
   const [selectedCartItems, setSelectedCartItems] = useState([]);
 
@@ -54,6 +55,18 @@ export default function Order() {
     return total;
   };
 
+  const saveDataToLocal = () => {
+    const orderInfo = {
+      customerName: name,
+      customerPhone: phone,
+      address: address,
+      totalAmount: calculateTotal(),
+      paymentMethod: paymentMethod,
+      paymentStatus: "Paid",
+      idCartItems: selectedCartItems.map((item) => item.id),
+    };
+    localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
+  };
   const handleConfirmOrder = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user && user.token) {
@@ -71,12 +84,13 @@ export default function Order() {
           address: address,
           totalAmount: calculateTotal(),
           paymentMethod: paymentMethod,
-          paymentStatus: "Pending",
+          paymentStatus: paymentMethod === "cash" ? "pending" : "Paid",
           idCartItems: selectedCartItems.map((item) => item.id),
         });
         if (respone && respone.status === 200) {
           alert("Order thanh cong");
-          // navigate("/detailsOrder");
+          setPaymentStatus(paymentMethod === "cash" ? "pending" : "Paid");
+          navigate("/orderinfo");
         } else {
           console.error("Order khong thanh cong");
         }
@@ -87,6 +101,50 @@ export default function Order() {
       console.log("hmmm");
     }
   };
+
+  const handlePayment = async () => {
+    saveDataToLocal();
+    try {
+      // Gọi API để tạo yêu cầu thanh toán
+      const response = await axios.get(API_GET_PAYMENT_REQ, {
+        params: {
+          amount: calculateTotal(), // Số tiền thanh toán
+        },
+      });
+
+      // Lấy URL thanh toán từ phản hồi
+      const paymentUrl = response.data.url;
+      console.log(paymentUrl);
+      // Chuyển hướng người dùng đến URL thanh toán
+      window.location.href = paymentUrl;
+    } catch (error) {
+      console.error("Error creating VNPay payment:", error);
+    }
+  };
+
+  // Trong trang vnp_ReturnUrl
+  const handleVNPayResponse = () => {
+    saveDataToLocal();
+    const params = new URLSearchParams(window.location.search);
+    console.log("got");
+    const vnp_Amount = params.get("vnp_Amount");
+    const vnp_ResponseCode = params.get("vnp_ResponseCode");
+
+    if (vnp_ResponseCode === "00") {
+      // Xử lý khi thanh toán thành công
+      console.log(`Thanh toán thành công. Số tiền: ${vnp_Amount}`);
+      // Cập nhật paymentStatus tại đây nếu cần thiết
+      setPaymentStatus("Paid");
+      handleConfirmOrder();
+      navigate("/orderinfo");
+    } else {
+      // Xử lý khi thanh toán thất bại
+      console.error("Thanh toán thất bại.");
+    }
+  };
+
+  // Gọi hàm xử lý phản hồi khi trang được tải
+  window.addEventListener("load", handleVNPayResponse);
 
   return (
     <div className="container padding-bottom-3x mb-1">
@@ -200,7 +258,6 @@ export default function Order() {
           required
         >
           <option value="cash">Cash</option>
-          <option value="momo">Momo</option>
           <option value="banking">Internet banking</option>
         </select>
       </div>
@@ -217,7 +274,9 @@ export default function Order() {
           <div className="float-right">
             <button
               className="btn btn-success me-4 ps-5 pe-5"
-              onClick={handleConfirmOrder}
+              onClick={
+                paymentMethod === "cash" ? handleConfirmOrder : handlePayment
+              }
             >
               Confirm
             </button>

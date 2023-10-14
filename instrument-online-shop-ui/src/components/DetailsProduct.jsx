@@ -172,6 +172,23 @@ function DetailsProduct() {
                       >
                         +
                       </button>
+                      {Number(product.inventoryQuantity) > 0 ? (
+                        <p className="" style={{ fontStyle: "italic" }}>
+                          {" "}
+                          {product.inventoryQuantity} sản phẩm có sẵn
+                        </p>
+                      ) : (
+                        <p
+                          style={{
+                            fontStyle: "italic",
+                            textTransform: "uppercase",
+                            color: "red",
+                          }}
+                        >
+                          {" "}
+                          Hết hàng
+                        </p>
+                      )}
                     </div>
                     <div className="cart mt-4 align-items-center">
                       {" "}

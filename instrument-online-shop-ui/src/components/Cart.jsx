@@ -5,16 +5,14 @@ import {
   API_REMOVE_CART_ITEM_FROM_CART,
   API_UPDATE_CART_ITEM_QUANTITY,
 } from "../service/api";
-import { useNavigate } from "react-router-dom";
-import { MDBInput } from "mdb-react-ui-kit";
+import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppProvider";
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedCartItems, setSelectedCartItems] = useState([]);
-  const { countCartItem, setCountCartItem, fetchCountCartItem } =
-    useContext(AppContext); // Danh sách các ID của các mục được chọn
+  const { fetchCountCartItem } = useContext(AppContext); // Danh sách các ID của các mục được chọn
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -204,14 +202,14 @@ function Cart() {
   const shouldEnableBuyButton = selectedCartItems.length > 0;
 
   return (
-    <div className="container padding-bottom-3x mb-1">
+    <div className="container padding-bottom-3x mb-5">
       <div className="d-flex justify-content-center mt-5">
         <h3>Cart</h3>
       </div>
       <div className="mt-2 mb-5 d-flex justify-content-end">
-        <button className="btn btn-warning me-4 ps-5 pe-5 " onClick={"/"}>
+        <Link to={"/orderInfo"} className="btn btn-warning me-4 ps-5 pe-5 ">
           My order
-        </button>
+        </Link>
       </div>
       <div className="table-responsive shopping-cart">
         <table className="table">

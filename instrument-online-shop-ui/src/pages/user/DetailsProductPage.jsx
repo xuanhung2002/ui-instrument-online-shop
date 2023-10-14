@@ -1,15 +1,13 @@
 import React from "react";
-import SliderHome from "../../components/SliderHome";
-import HomeProducts from "../../components/HomeProducts";
 import Header from "../../components/Header";
+import DetailsProduct from "../../components/DetailsProduct";
 import Footer from "../../components/Footer";
 
-export default function HomePage() {
+export default function () {
   return (
     <div>
       <Header />
-      <SliderHome />
-      <HomeProducts />
+      <DetailsProduct />
       <Footer />
     </div>
   );
