@@ -3,6 +3,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_GET_ORDERS_OF_USER } from "../service/api";
+import Cookies from "js-cookie";
+import { format } from "date-fns";
 export default function () {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
@@ -11,7 +13,7 @@ export default function () {
     fetchOrders();
   }, []);
   const fetchOrders = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(Cookies.get("user"));
     if (user && user.token) {
       const userToken = user.token;
       try {
@@ -35,6 +37,32 @@ export default function () {
       console.log("hmmm");
     }
   };
+
+  // const handleDeleteOrder = async (idOrder) => {
+  //   const user = JSON.parse(Cookies.get("user"));
+  //   if (user && user.token) {
+  //     const userToken = user.token;
+  //     try {
+  //       const axiosInstance = axios.create({
+  //         headers: {
+  //           Authorization: `Bearer ${userToken}`,
+  //         },
+  //       });
+
+  //       const respone = await axiosInstance.delete("//");
+  //       if (respone && respone.status === 200) {
+  //         setOrders(respone.data);
+  //         console.log(respone);
+  //       } else {
+  //         console.error("Order khong thanh cong");
+  //       }
+  //     } catch (error) {
+  //       console.error("Order khong thanh cong");
+  //     }
+  //   } else {
+  //     console.log("hmmm");
+  //   }
+  // };
 
   return (
     <div className="container padding-bottom-3x mb-1">
@@ -81,7 +109,16 @@ export default function () {
                   </td>
                   <td className="text-center">
                     <div className="count-input d-flex justify-content-center">
-                      {order.orderDate.join("/")}
+                      {format(
+                        new Date(
+                          order.orderDate[0],
+                          order.orderDate[1] - 1,
+                          order.orderDate[2],
+                          order.orderDate[3],
+                          order.orderDate[4]
+                        ),
+                        "dd/MM/yyyy HH:mm"
+                      )}
                     </div>
                   </td>
                   <td className=" text-center">
@@ -129,7 +166,7 @@ export default function () {
           <div className="float-left">
             <a
               className="btn btn-outline-secondary"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/cart")}
             >
               <i className="icon-arrow-left"></i>&nbsp;Back to cart
             </a>

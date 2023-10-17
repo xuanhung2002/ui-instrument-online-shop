@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_GET_CART_ITEM } from "../service/api";
 import { AppContext } from "../context/AppProvider";
+import Cookies from "js-cookie";
 
 function Hearder() {
   const [user, setUser] = useState();
@@ -12,9 +13,7 @@ function Hearder() {
   const { countCartItem, setCountCartItem, fetchCountCartItem } =
     useContext(AppContext);
   useEffect(() => {
-    const user = localStorage.getItem("user")
-      ? JSON.parse(localStorage.getItem("user"))
-      : null;
+    const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
     if (user) {
       setUser(user);
     }
@@ -23,13 +22,15 @@ function Hearder() {
 
   const handleLogout = () => {
     if (user) {
-      localStorage.removeItem("user");
+      // localStorage.removeItem("user");
+      Cookies.remove("user");
+
       window.location.reload();
     }
   };
 
   const handleGoToCart = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
     if (user && user.token) {
       navigate("/cart");
     } else {

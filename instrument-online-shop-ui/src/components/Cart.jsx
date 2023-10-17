@@ -7,6 +7,7 @@ import {
 } from "../service/api";
 import { Link, useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppProvider";
+import Cookies from "js-cookie";
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -20,7 +21,7 @@ function Cart() {
   }, []);
 
   const fetchCartItem = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
     if (user && user.token) {
       setIsLoggedIn(true);
       const userToken = user.token;
@@ -52,7 +53,7 @@ function Cart() {
   };
 
   const handleUpdateNewQuantity = async (cartItemId, newQuantity) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
     if (user && user.token) {
       const userToken = user.token;
       try {
@@ -130,7 +131,7 @@ function Cart() {
   };
 
   const handleRemoveCartItem = async (cartItemId) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
     if (user && user.token) {
       setIsLoggedIn(true);
       const userToken = user.token;
@@ -191,10 +192,7 @@ function Cart() {
   };
 
   const handleBuyClick = () => {
-    localStorage.setItem(
-      "selectedCartItems",
-      JSON.stringify(selectedCartItems)
-    );
+    Cookies.set("selectedCartItems", JSON.stringify(selectedCartItems));
     navigate("/order");
   };
 

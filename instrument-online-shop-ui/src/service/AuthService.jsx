@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import { loginApi, registerApi } from "./UserService";
+import Cookies from "js-cookie";
 
 const handleLogin = async (data) => {
   try {
@@ -11,7 +12,8 @@ const handleLogin = async (data) => {
         token: res.data.accessToken,
         username: data.username,
       };
-      localStorage.setItem("user", JSON.stringify(user));
+      // localStorage.setItem("user", JSON.stringify(user));
+      Cookies.set("user", JSON.stringify(user));
     } else {
       if (res && res.status !== 200) {
         toast.error(res.data.error);

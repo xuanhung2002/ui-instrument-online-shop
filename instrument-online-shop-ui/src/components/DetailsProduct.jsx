@@ -5,6 +5,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { API_ADD_ITEM_TO_CART } from "../service/api";
 import { AppContext } from "../context/AppProvider";
+import Cookies from "js-cookie";
 
 function DetailsProduct() {
   const { fetchCountCartItem } = useContext(AppContext);
@@ -42,7 +43,7 @@ function DetailsProduct() {
 
   //add to cart
   const handleAddToCart = async (itemId, quantity) => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(Cookies.get("user"));
     if (user && user.token) {
       const userToken = user.token;
       try {
