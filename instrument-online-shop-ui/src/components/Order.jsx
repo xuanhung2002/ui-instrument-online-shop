@@ -2,6 +2,12 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_ADD_ORDER, API_GET_PAYMENT_REQ } from "../service/api";
+import Cookies from "js-cookie";
+import * as yup from "yup";
+import { handleLogin } from "../service/AuthService";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { MDBBtn, MDBInput } from "mdb-react-ui-kit";
 
 export default function Order() {
   const [name, setName] = useState("");
@@ -12,12 +18,28 @@ export default function Order() {
 
   const [selectedCartItems, setSelectedCartItems] = useState([]);
 
+  const schema = yup
+    .object()
+    .shape({
+      name: yup.string().required(),
+      phone: yup.string().required(),
+      address: yup.string().required(),
+    })
+    .required();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
   useEffect(() => {
     fetchSelectedCartItems();
   }, []);
 
   const fetchSelectedCartItems = () => {
-    const selectedItemsString = localStorage.getItem("selectedCartItems");
+    const selectedItemsString = Cookies.get("selectedCartItems");
     if (selectedItemsString) {
       const selectedItemsArray = JSON.parse(selectedItemsString);
       setSelectedCartItems(selectedItemsArray);
@@ -26,7 +48,7 @@ export default function Order() {
 
   useEffect(() => {
     return () => {
-      localStorage.removeItem("selectedCartItems");
+      Cookies.remove("selectedCartItems");
     };
   }, []);
 
@@ -65,10 +87,11 @@ export default function Order() {
       paymentStatus: "Paid",
       idCartItems: selectedCartItems.map((item) => item.id),
     };
-    localStorage.setItem("orderInfo", JSON.stringify(orderInfo));
+    console.log("orderInfo", orderInfo);
+    Cookies.set("orderInfo", JSON.stringify(orderInfo));
   };
   const handleConfirmOrder = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(Cookies.get("user"));
     if (user && user.token) {
       const userToken = user.token;
       try {
@@ -84,13 +107,11 @@ export default function Order() {
           address: address,
           totalAmount: calculateTotal(),
           paymentMethod: paymentMethod,
-          paymentStatus: paymentMethod === "cash" ? "pending" : "Paid",
+          paymentStatus: "pending",
           idCartItems: selectedCartItems.map((item) => item.id),
         });
         if (respone && respone.status === 200) {
-          alert("Order thanh cong");
-          setPaymentStatus(paymentMethod === "cash" ? "pending" : "Paid");
-          navigate("/orderinfo");
+          navigate("/response-order", { state: { status: "success" } });
         } else {
           console.error("Order khong thanh cong");
         }
@@ -121,168 +142,151 @@ export default function Order() {
       console.error("Error creating VNPay payment:", error);
     }
   };
-
-  // Trong trang vnp_ReturnUrl
-  const handleVNPayResponse = () => {
-    saveDataToLocal();
-    const params = new URLSearchParams(window.location.search);
-    console.log("got");
-    const vnp_Amount = params.get("vnp_Amount");
-    const vnp_ResponseCode = params.get("vnp_ResponseCode");
-
-    if (vnp_ResponseCode === "00") {
-      // Xử lý khi thanh toán thành công
-      console.log(`Thanh toán thành công. Số tiền: ${vnp_Amount}`);
-      // Cập nhật paymentStatus tại đây nếu cần thiết
-      setPaymentStatus("Paid");
-      handleConfirmOrder();
-      navigate("/orderinfo");
-    } else {
-      // Xử lý khi thanh toán thất bại
-      console.error("Thanh toán thất bại.");
-    }
-  };
-
-  // Gọi hàm xử lý phản hồi khi trang được tải
-  window.addEventListener("load", handleVNPayResponse);
-
   return (
     <div className="container padding-bottom-3x mb-1">
       <div className="d-flex justify-content-center mt-5">
         <h3>ORDER</h3>
       </div>
-      <form>
-        <div className="form-group">
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={name}
-            onChange={handleNameChange}
-            className="form-control"
-            required
-          />
+      <form
+        onSubmit={handleSubmit((data) => {
+          if (paymentMethod === "cash") {
+            handleConfirmOrder();
+          } else {
+            handlePayment();
+          }
+        })}
+      >
+        <MDBInput
+          wrapperClassclassName="mb-4"
+          label="Name"
+          type="name"
+          value={name}
+          size="lg"
+          name="name"
+          {...register("name")}
+          onChange={handleNameChange}
+        />
+        {errors.name?.message && (
+          <p style={{ color: "red" }}>{errors.name?.message}</p>
+        )}
+        <MDBInput
+          wrapperClassclassName="mb-4"
+          label="Phone"
+          type="phone"
+          value={phone}
+          size="lg"
+          name="phone"
+          {...register("phone")}
+          onChange={handlePhoneChange}
+        />
+        {errors.name?.message && (
+          <p style={{ color: "red" }}>{errors.phone?.message}</p>
+        )}
+        <MDBInput
+          wrapperClassclassName="mb-4"
+          label="Address"
+          type="address"
+          value={address}
+          size="lg"
+          name="address"
+          {...register("address")}
+          onChange={handleAddressChange}
+        />
+        {errors.address?.message && (
+          <p style={{ color: "red" }}>{errors.address?.message}</p>
+        )}
+
+        <div className="table-responsive shopping-cart">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th className="text-center">Quantity</th>
+                <th className="text-center">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedCartItems.map((item, index) => (
+                <tr key={index}>
+                  <td>
+                    <div className="product-item justify-content-center">
+                      <a className="product-thumb" href="#">
+                        <img
+                          src={item.itemImage} // Correct the property name here
+                          alt="Product"
+                          style={{ height: "100px", width: "100px" }}
+                        />
+                      </a>
+                      <div className="product-info">
+                        <h4 className="product-title">
+                          <p href="#">{item.nameItem}</p>{" "}
+                          {/* Correct the property name here */}
+                        </h4>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="text-center">
+                    <div className="count-input d-flex justify-content-center">
+                      <span
+                        className="form-control sm fs-7 mt-5"
+                        style={{ maxWidth: "200px", borderRadius: "0" }}
+                      >
+                        {item.quantity} {/* Correct the property name here */}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="text-center">
+                    <p className="text-center my-5">
+                      {item.quantity * item.unitPrice}{" "}
+                      {/* Correct the property names here */}
+                    </p>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <div className="form-group">
-          <label htmlFor="phone">Phone:</label>
-          <input
-            type="text"
-            id="phone"
-            name="phone"
-            value={phone}
-            onChange={handlePhoneChange}
-            className="form-control"
-            required
-          />
+        <div className="shopping-cart-footer">
+          <div className="d-flex justify-content-end text-lg me-5">
+            <p className="mt-1">Total:</p>
+            <span className="text-medium fw-bold fs-5">
+              {"  "}${calculateTotal()}
+            </span>
+          </div>
         </div>
-        <div className="form-group">
-          <label htmlFor="address">Address:</label>
-          <textarea
-            id="address"
-            name="address"
-            value={address}
-            onChange={handleAddressChange}
+
+        <div className="form-group mb-4">
+          <label htmlFor="paymentMethod">Payment method:</label>
+          <select
+            id="paymentMethod"
+            name="paymentMethod"
+            value={paymentMethod}
+            onChange={handlePaymentMethodChange}
             className="form-control"
             required
-          />
+          >
+            <option value="cash">Cash</option>
+            <option value="vnpay">Online payment</option>
+          </select>
+        </div>
+        <div className="container shopping-cart-footer">
+          <div className="d-flex justify-content-between">
+            <div className="float-left">
+              <a
+                className="btn btn-outline-secondary"
+                onClick={() => navigate(-1)}
+              >
+                <i className="icon-arrow-left"></i>&nbsp;Back to Cart
+              </a>
+            </div>
+            <div className="float-right">
+              <MDBBtn className="btn btn-success me-4 ps-5 pe-5" type="submit">
+                Confirm
+              </MDBBtn>
+            </div>
+          </div>
         </div>
       </form>
-      <div className="table-responsive shopping-cart">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Product Name</th>
-              <th className="text-center">Quantity</th>
-              <th className="text-center">Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {selectedCartItems.map((item, index) => (
-              <tr key={index}>
-                <td>
-                  <div className="product-item justify-content-center">
-                    <a className="product-thumb" href="#">
-                      <img
-                        src={item.itemImage} // Correct the property name here
-                        alt="Product"
-                        style={{ height: "100px", width: "100px" }}
-                      />
-                    </a>
-                    <div className="product-info">
-                      <h4 className="product-title">
-                        <p href="#">{item.nameItem}</p>{" "}
-                        {/* Correct the property name here */}
-                      </h4>
-                    </div>
-                  </div>
-                </td>
-                <td className="text-center">
-                  <div className="count-input d-flex justify-content-center">
-                    <span
-                      className="form-control sm fs-7 mt-5"
-                      style={{ maxWidth: "200px", borderRadius: "0" }}
-                    >
-                      {item.quantity} {/* Correct the property name here */}
-                    </span>
-                  </div>
-                </td>
-                <td className="text-center">
-                  <p className="text-center my-5">
-                    {item.quantity * item.unitPrice}{" "}
-                    {/* Correct the property names here */}
-                  </p>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="shopping-cart-footer">
-        <div className="d-flex justify-content-end text-lg me-5">
-          <p className="mt-1">Total:</p>
-          <span className="text-medium fw-bold fs-5">
-            {"  "}${calculateTotal()}
-          </span>
-        </div>
-      </div>
-
-      <div className="form-group mb-4">
-        <label htmlFor="paymentMethod">Payment method:</label>
-        <select
-          id="paymentMethod"
-          name="paymentMethod"
-          value={paymentMethod}
-          onChange={handlePaymentMethodChange}
-          className="form-control"
-          required
-        >
-          <option value="cash">Cash</option>
-          <option value="banking">Internet banking</option>
-        </select>
-      </div>
-      <div className="container shopping-cart-footer">
-        <div className="d-flex justify-content-between">
-          <div className="float-left">
-            <a
-              className="btn btn-outline-secondary"
-              onClick={() => navigate(-1)}
-            >
-              <i className="icon-arrow-left"></i>&nbsp;Back to Cart
-            </a>
-          </div>
-          <div className="float-right">
-            <button
-              className="btn btn-success me-4 ps-5 pe-5"
-              onClick={
-                paymentMethod === "cash" ? handleConfirmOrder : handlePayment
-              }
-            >
-              Confirm
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

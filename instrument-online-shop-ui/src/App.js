@@ -3,13 +3,8 @@ import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
 import "./App.scss";
 import HomePage from "./pages/user/HomePage";
 import 'react-toastify/dist/ReactToastify.css';
-import Cart from "./components/Cart";
-import Order from "./components/Order";
 import AppProvider from "./context/AppProvider";
-import OrderInfo from "./components/OrderInfo";
 import AdminDash from "./components/AdminDash";
-import Brand from "./components/Brand";
-import Contact from "./components/Contact";
 import ProductPage from "./pages/user/ProductPage";
 import DetailsProductPage from "./pages/user/DetailsProductPage";
 import LoginPage from "./pages/user/LoginPage";
@@ -19,6 +14,8 @@ import BrandPage from "./pages/user/BrandPage";
 import ContactPage from "./pages/user/ContactPage";
 import OrderPage from "./pages/user/OrderPage";
 import OrderInfoPage from "./pages/user/OrderInfoPage";
+import ResponsePaymentOnlineOrder from "./components/ResponsePaymentOnlineOrder";
+import ResponseOrder from "./components/ResponseOrder";
 function App() {
   return (
     <BrowserRouter> 
@@ -35,7 +32,8 @@ function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/order" element={<OrderPage />} />
           <Route path="/orderinfo" element={<OrderInfoPage />} />
-          <Route path="/pay-response" element={<Order />} />
+          <Route path="/pay-response" element={<ResponsePaymentOnlineOrder />} />
+          <Route path="/response-order" element={<ResponseOrder />} />
         </Routes>
       </AppProvider>
     </BrowserRouter>
