@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { API_GET_CART_ITEM } from "../service/api";
 import { AppContext } from "../context/AppProvider";
@@ -12,6 +12,32 @@ function Hearder() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { countCartItem, setCountCartItem, fetchCountCartItem } =
     useContext(AppContext);
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const buttonRef = useRef(null);
+
+  const handleToggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  useEffect(() => {
+    const handleDocumentClick = (e) => {
+      if (
+        menuOpen &&
+        buttonRef.current &&
+        !buttonRef.current.contains(e.target)
+      ) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleDocumentClick);
+
+    return () => {
+      document.removeEventListener("click", handleDocumentClick);
+    };
+  }, [menuOpen]);
+
   useEffect(() => {
     const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
     if (user) {
@@ -37,7 +63,6 @@ function Hearder() {
       navigate("/login");
     }
   };
-
   return (
     <div>
       <div className="fixed-top">
@@ -117,8 +142,9 @@ function Hearder() {
       </div>
       <div className="mt-5">
         <nav className="navbar navbar-expand-lg bg-body-tertiary shadow-lg">
-          <div className="container d-flex flex-nowrap">
+          <div className="container d-flex flex-nowrap position-relative">
             <button
+              ref={buttonRef}
               className="navbar-toggler"
               type="button"
               data-bs-toggle="collapse"
@@ -126,9 +152,39 @@ function Hearder() {
               aria-controls="navbarNavDropdown"
               aria-expanded="false"
               aria-label="Toggle navigation"
+              onClick={handleToggleMenu}
             >
               <span className="navbar-toggler-icon"></span>
             </button>
+            {menuOpen && (
+              <div
+                className="position-absolute top-50 mt-4 "
+                style={{ zIndex: "1000" }}
+              >
+                <ul className="list-group text-uppercase">
+                  <li className="list-group-item pe-5 pt-3 pb-3">
+                    <a className="nav-link" href="/">
+                      Home
+                    </a>
+                  </li>
+                  <li className="list-group-item pe-5 pt-3 pb-3">
+                    <a className="nav-link" href="/product">
+                      Product
+                    </a>
+                  </li>
+                  <li className="list-group-item pe-5 pt-3 pb-3">
+                    <a className="nav-link" href="/brand">
+                      Brand
+                    </a>
+                  </li>
+                  <li className="list-group-item pe-5 pt-3 pb-3">
+                    <a className="nav-link" href="/contact">
+                      Contact
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            )}
             <div className="header-info navbar-collapse d-flex justify-content-center">
               <ul className="navbar-nav mx-auto d-flex flex-row align-items-center">
                 <li className="nav-item collapse navbar-collapse me-3">

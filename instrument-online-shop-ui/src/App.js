@@ -4,7 +4,6 @@ import "./App.scss";
 import HomePage from "./pages/user/HomePage";
 import 'react-toastify/dist/ReactToastify.css';
 import AppProvider from "./context/AppProvider";
-import AdminDash from "./components/AdminDash";
 import ProductPage from "./pages/user/ProductPage";
 import DetailsProductPage from "./pages/user/DetailsProductPage";
 import LoginPage from "./pages/user/LoginPage";
@@ -21,7 +20,6 @@ function App() {
     <BrowserRouter> 
       <AppProvider>
         <Routes>
-          <Route path="/admin-dashboard" element={<AdminDash />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/product/:id" element={<DetailsProductPage />} />
           <Route path="/login" element={<LoginPage />} />
