@@ -70,5 +70,20 @@
   cursor: pointer;
 }
 
+.li-hover:hover{
+  color: #FFCC00;
+}
+
+.search-box {
+  display: none;
+  flex-direction: row; /* Đảm bảo hiển thị ngang */
+}
+
+.button:hover + .search-box {
+  display: flex; /* Hiển thị phần tìm kiếm khi di chuột vào biểu tượng tìm kiếm */
+}
+.letter-spacing {
+  letter-spacing: 2px;
+}
 
 

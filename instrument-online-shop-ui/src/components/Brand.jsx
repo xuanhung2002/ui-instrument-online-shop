@@ -7,7 +7,9 @@ export default function Brand() {
   const [brands, setBrands] = useState([]);
   useEffect(() => {
     fetchBrands();
+    window.scrollTo(0, 0);
   }, []);
+
   const fetchBrands = async () => {
     try {
       const response = await axios.get(API_GET_ALL_BRAND); // Sử dụng axios.get thay cho fetch
