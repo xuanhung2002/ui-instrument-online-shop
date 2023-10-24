@@ -120,7 +120,7 @@ function Hearder() {
                         style={{ borderRadius: "0" }}
                         value={searchKey}
                         onChange={handleSearchKeyChange}
-                        onKeyDown={() => handleEnter(searchKey)}
+                        onKeyDown={handleEnter}
                       />
                     </div>
                     <a
