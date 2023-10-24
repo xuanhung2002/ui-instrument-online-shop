@@ -7,7 +7,6 @@ import { AppContext } from "../context/AppProvider";
 import Cookies from "js-cookie";
 import "../App.scss";
 import { Button } from "react-bootstrap";
-
 function Hearder() {
   const [user, setUser] = useState();
   const navigate = useNavigate();
