@@ -16,6 +16,7 @@ export default function HomeProducts() {
     fetchCategory();
     fetchItem();
     fetchBrand();
+    window.scrollTo(0, 0);
   }, []);
 
   const fetchCategory = async () => {

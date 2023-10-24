@@ -20,7 +20,8 @@ export default function Product() {
   const [totalItem, setTotalItem] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const itemPerPage = 4;
+  const itemPerPage = 8;
+  const [selectedSortOption, setSelectedSortOption] = useState(null);
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -51,13 +52,14 @@ export default function Product() {
     }
   };
 
-  const fetchItem = async (currentPage) => {
+  const fetchItem = async (currentPage, sortBy) => {
     setSelectedCategory(null);
     try {
       const response = await axios.get(API_GET_ALL_ITEM, {
         params: {
           page: currentPage,
           size: itemPerPage,
+          sortBy: sortBy,
         },
       }); // Sử dụng axios.get thay cho fetch
       const jsonData = response.data;
@@ -103,7 +105,7 @@ export default function Product() {
     fetchBrand();
   }, []);
 
-  const fetchItemsByCategory = async (categoryName, currentPage) => {
+  const fetchItemsByCategory = async (categoryName, currentPage, sortBy) => {
     setItem([]);
     try {
       const response = await axios.get(API_GET_ITEM_BY_CATEGORY_NAME, {
@@ -111,6 +113,7 @@ export default function Product() {
           categoryName: categoryName,
           page: currentPage,
           size: itemPerPage,
+          sortBy: sortBy,
         },
       }); // Sử dụng axios.get thay cho fetch
       const jsonData = response.data;
@@ -132,6 +135,18 @@ export default function Product() {
     }
   };
 
+  const handleSort = (sortValue) => {
+    setSelectedSortOption(sortValue);
+
+    {
+      selectedCategory && fetchItemsByCategory(selectedCategory, 0, sortValue);
+    }
+
+    {
+      !selectedCategory && fetchItem(0, sortValue);
+    }
+  };
+
   const handleViewItemsByCategory = (categoryName) => {
     setCurrentPage(0);
     setSelectedCategory(categoryName);
@@ -143,8 +158,12 @@ export default function Product() {
     console.log("selectedCategory 2", selectedCategory);
     const newListItem =
       selectedCategory === null
-        ? fetchItem(event.selected)
-        : fetchItemsByCategory(selectedCategory, event.selected);
+        ? fetchItem(event.selected, selectedSortOption)
+        : fetchItemsByCategory(
+            selectedCategory,
+            event.selected,
+            selectedSortOption
+          );
     console.log(
       `User requested page number ${event.selected}, which is offset ${newListItem}`
     );
@@ -191,27 +210,6 @@ export default function Product() {
                 </ul>
               </div>
             </div>
-            {/* <div className="slidebar-item mt-3">
-              <div className="slidebar-title">
-                <h2 className="title-head margin-top-0">
-                  <span>Brand</span>
-                </h2>
-              </div>
-              <div className="slidebar-content">
-                <ul className="list-group">
-                  {brand.map((brand, index) => (
-                    <li key={index} className="list-group-item">
-                      <a
-                        href=""
-                        style={{ textDecoration: "none", color: "#000" }}
-                      >
-                        {brand.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div> */}
           </div>
 
           <div className="col-md-10 col-sm-12">
@@ -236,7 +234,10 @@ export default function Product() {
                     aria-hidden="true"
                   ></i>
                 </div>
-                <div className="" style={{ position: "absolute", top: "100%" }}>
+                <div
+                  className=""
+                  style={{ position: "absolute", top: "100%", zIndex: "100" }}
+                >
                   {isHovered && (
                     <ul
                       className="list-group"
@@ -252,6 +253,7 @@ export default function Product() {
                           className="list-group-item li-hover p-3"
                           style={{ width: "140px" }}
                           value={sort.value}
+                          onClick={() => handleSort(sort.value)}
                         >
                           {sort.name}
                         </li>

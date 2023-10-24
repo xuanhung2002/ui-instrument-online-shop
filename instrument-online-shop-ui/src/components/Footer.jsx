@@ -8,6 +8,7 @@ import {
   MDBInput,
   MDBBtn,
 } from "mdb-react-ui-kit";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -71,40 +72,40 @@ export default function Footer() {
                 HT Music intrument
               </h6>
               <p>
-                <a
-                  href="#!"
+                <Link
+                  to="/"
                   className="text-reset"
                   style={{ textDecoration: "none" }}
                 >
-                  Trang chủ
-                </a>
+                  Home
+                </Link>
               </p>
               <p>
-                <a
-                  href="#!"
+                <Link
+                  to="/brand"
                   className="text-reset"
                   style={{ textDecoration: "none" }}
                 >
-                  Giới thiệu
-                </a>
+                  Brand
+                </Link>
               </p>
               <p>
-                <a
-                  href="#!"
+                <Link
+                  to="/product"
                   className="text-reset"
                   style={{ textDecoration: "none" }}
                 >
-                  Sản phẩm
-                </a>
+                  Product
+                </Link>
               </p>
               <p>
-                <a
-                  href="#!"
+                <Link
+                  to="/contact"
                   className="text-reset"
                   style={{ textDecoration: "none" }}
                 >
-                  Liên hệ
-                </a>
+                  Contact
+                </Link>
               </p>
             </MDBCol>
 
