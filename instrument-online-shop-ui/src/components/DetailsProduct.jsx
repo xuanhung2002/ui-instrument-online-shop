@@ -43,7 +43,7 @@ function DetailsProduct() {
 
   //add to cart
   const handleAddToCart = async (itemId, quantity) => {
-    const user = JSON.parse(Cookies.get("user"));
+    const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
     if (user && user.token) {
       const userToken = user.token;
       try {
