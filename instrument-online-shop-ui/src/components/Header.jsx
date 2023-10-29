@@ -106,7 +106,7 @@ function Hearder() {
 
             <div className="col-lg-6 col-md-12 buttons d-flex flex-row ps-5 justify-content-center">
               <ul className="nav d-flex flex-row">
-                <li className=" hover-pointer col-lg-6 col-sm-5 col-md-6 col-19">
+                <li className=" hover-pointer col-lg-6 col-sm-5 col-md-4 col-19">
                   <div
                     className="d-flex flex-row"
                     style={{ border: "1px solid #333333" }}
@@ -134,31 +134,35 @@ function Hearder() {
                   </div>
                 </li>
                 {user ? (
-                  <li className="col-lg-6 col-md-6 col-sm-7 col-7">
-                    <span className="button nav-item">
-                      <p className="btn btn-outline-dark text-light ps-2">
-                        <i className="fa fa-user text-warning ms-2"></i>{" "}
-                        {user.username}
-                      </p>
-                    </span>
-                    <span className="button nav-item">
-                      <p
-                        onClick={handleLogout}
-                        to="/register"
-                        className="btn btn-outline-dark text-light ms-2"
-                      >
-                        <i
-                          class="fa fa-sign-out text-warning"
-                          aria-hidden="true"
-                        ></i>{" "}
-                        Logout
-                      </p>
-                    </span>
-                  </li>
+                  <>
+                    <li className="ms-2">
+                      <span className="button nav-item col-lg-6 col-md-8 col-sm-7 col-12">
+                        <Link
+                          to="/login"
+                          className="btn btn-outline-dark text-light ps-2"
+                        >
+                          <i className="fa fa-user text-warning ms-2"></i>{" "}
+                          {user?.username}
+                        </Link>
+                      </span>
+                      <span className="button nav-item ">
+                        <button
+                          onClick={handleLogout}
+                          className="btn btn-outline-dark text-light ms-2"
+                        >
+                          <i
+                            class="fa fa-sign-out text-warning"
+                            aria-hidden="true"
+                          ></i>{" "}
+                          Logout
+                        </button>
+                      </span>
+                    </li>
+                  </>
                 ) : (
                   <>
                     <li className="ms-2">
-                      <span className="button nav-item col-lg-6 col-md-6 col-sm-7 col-12">
+                      <span className="button nav-item col-lg-6 col-md-8 col-sm-7 col-12">
                         <Link
                           to="/login"
                           className="btn btn-outline-dark text-light ps-2"
