@@ -105,7 +105,6 @@ export default function Order() {
           customerName: name,
           customerPhone: phone,
           address: address,
-          totalAmount: calculateTotal(),
           paymentMethod: paymentMethod,
           paymentStatus: "pending",
           idCartItems: selectedCartItems.map((item) => item.id),

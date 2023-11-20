@@ -106,7 +106,7 @@ function Hearder() {
 
             <div className="col-lg-6 col-md-12 buttons d-flex flex-row ps-5 justify-content-center">
               <ul className="nav d-flex flex-row">
-                <li className=" hover-pointer col-lg-6 col-sm-5 col-md-4 col-19">
+                <li className=" hover-pointer col-lg-5 col-sm-5 col-md-4 col-19">
                   <div
                     className="d-flex flex-row"
                     style={{ border: "1px solid #333333" }}
@@ -135,8 +135,8 @@ function Hearder() {
                 </li>
                 {user ? (
                   <>
-                    <li className="ms-2">
-                      <span className="button nav-item col-lg-6 col-md-8 col-sm-7 col-12">
+                    <li className="">
+                      <span className="button nav-item col-lg-7 col-md-8 col-sm-7 col-12">
                         <Link
                           to="/login"
                           className="btn btn-outline-dark text-light ps-2"
@@ -162,7 +162,7 @@ function Hearder() {
                 ) : (
                   <>
                     <li className="ms-2">
-                      <span className="button nav-item col-lg-6 col-md-8 col-sm-7 col-12">
+                      <span className="button nav-item col-lg-7 col-md-8 col-sm-7 col-12">
                         <Link
                           to="/login"
                           className="btn btn-outline-dark text-light ps-2"
