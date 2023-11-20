@@ -137,10 +137,7 @@ function Hearder() {
                   <>
                     <li className="">
                       <span className="button nav-item col-lg-7 col-md-8 col-sm-7 col-12">
-                        <Link
-                          to="/login"
-                          className="btn btn-outline-dark text-light ps-2"
-                        >
+                        <Link className="btn btn-outline-dark text-light ps-2">
                           <i className="fa fa-user text-warning ms-2"></i>{" "}
                           {user?.username}
                         </Link>
