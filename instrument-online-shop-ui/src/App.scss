@@ -86,4 +86,17 @@
   letter-spacing: 2px;
 }
 
+.text-container {
+  white-space: nowrap;        /* Ngăn người dùng xuống dòng */
+  overflow: hidden;           /* Ẩn phần vượt quá kích thước */
+  text-overflow: ellipsis;    /* Hiển thị dấu chấm ba chấm khi vượt quá */
+  max-width: 10ch;            /* Giới hạn chiều rộng tối đa là 10 ký tự */
+  border: 1px solid #ccc;     /* Để dễ nhận diện giới hạn chiều rộng */
+}
+
+.active-tab {
+  background-color: #FFCC00;
+  color: #FFCC00;
+}
+
 

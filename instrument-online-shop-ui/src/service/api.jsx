@@ -16,3 +16,4 @@ export const API_GET_PAYMENT_REQ =
   RootURL + "/api/payment/create_VNPay_payment";
 export const API_GET_ROLE = RootURL + "/api/auth/getRole";
 export const API_SEARCH_ITEM = RootURL + "/api/item/search";
+export const API_USER_CANCEL_ORDER = RootURL + "/api/order/userCancelOrder";
