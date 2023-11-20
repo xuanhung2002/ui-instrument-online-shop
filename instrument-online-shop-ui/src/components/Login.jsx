@@ -16,8 +16,6 @@ import * as yup from "yup";
 import { handleLogin } from "../service/AuthService";
 
 function Login() {
-  // const [username, setUsername] = useState("");
-  // const [password, setPassword] = useState("");
   const schema = yup
     .object()
     .shape({
